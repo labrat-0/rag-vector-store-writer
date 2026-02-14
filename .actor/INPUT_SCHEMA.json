@@ -1,0 +1,83 @@
+{
+    "title": "RAG Vector Store Writer",
+    "description": "Write embedding vectors to Pinecone or Qdrant vector databases. Chains directly with RAG Embedding Generator output or accepts raw vectors with metadata.",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "api_key": {
+            "title": "Vector DB API Key",
+            "type": "string",
+            "description": "Your Pinecone or Qdrant API key. Never logged or stored beyond this run.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "provider": {
+            "title": "Vector Database Provider",
+            "type": "string",
+            "description": "Which vector database to write to.",
+            "editor": "select",
+            "enum": ["pinecone", "qdrant"],
+            "default": "pinecone"
+        },
+        "index_name": {
+            "title": "Index / Collection Name",
+            "type": "string",
+            "description": "Pinecone: the index name (used to resolve the host). Qdrant: the collection name. Will be auto-created for Qdrant if it doesn't exist.",
+            "editor": "textfield"
+        },
+        "environment": {
+            "title": "Qdrant Cluster URL",
+            "type": "string",
+            "description": "Qdrant Cloud only: your full cluster URL (e.g., 'https://xyz-example.us-east-1.aws.cloud.qdrant.io:6333'). Not needed for Pinecone.",
+            "editor": "textfield",
+            "nullable": true
+        },
+        "namespace": {
+            "title": "Namespace (Pinecone only)",
+            "type": "string",
+            "description": "Pinecone namespace to write vectors into. Leave empty for the default namespace. Ignored for Qdrant.",
+            "editor": "textfield",
+            "default": "",
+            "nullable": true
+        },
+        "distance_metric": {
+            "title": "Distance Metric (Qdrant only)",
+            "type": "string",
+            "description": "Distance metric for Qdrant collection creation. Only used when auto-creating a new collection. Ignored for Pinecone.",
+            "editor": "select",
+            "enum": ["Cosine", "Dot", "Euclid"],
+            "default": "Cosine"
+        },
+        "dataset_id": {
+            "title": "Apify Dataset ID (from Embedding Generator)",
+            "type": "string",
+            "description": "ID of an Apify dataset containing embedding vectors (e.g., output from RAG Embedding Generator). Each item should have an 'embedding' field. Takes priority over 'vectors' input.",
+            "editor": "textfield",
+            "nullable": true
+        },
+        "vectors": {
+            "title": "Raw Vectors (JSON)",
+            "type": "array",
+            "description": "Direct vector input as a JSON array. Each item: {\"id\": \"optional-id\", \"embedding\": [0.1, ...], \"metadata\": {\"key\": \"value\"}}. Use dataset_id for chaining with Embedding Generator instead.",
+            "editor": "json",
+            "nullable": true
+        },
+        "batch_size": {
+            "title": "Batch Size",
+            "type": "integer",
+            "description": "Number of vectors to upsert per API request. Pinecone max: 1000 (recommended: 100-200 for 1536d vectors). Qdrant: no hard limit (recommended: 100).",
+            "default": 100,
+            "minimum": 1,
+            "maximum": 1000
+        },
+        "id_field": {
+            "title": "ID Field",
+            "type": "string",
+            "description": "Which field from dataset items to use as the vector ID. Default: 'chunk_id' (from RAG Content Chunker). Falls back to UUID generation if the field is missing.",
+            "editor": "textfield",
+            "default": "chunk_id"
+        }
+    },
+    "required": ["api_key", "index_name"],
+    "additionalProperties": false
+}

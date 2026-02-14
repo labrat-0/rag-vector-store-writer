@@ -1,0 +1,21 @@
+{
+  "actorSpecification": 1,
+  "name": "rag-vector-store-writer",
+  "title": "RAG Vector Store Writer",
+  "description": "Write embedding vectors to Pinecone or Qdrant vector databases. Chains directly with RAG Embedding Generator or accepts raw vectors. Handles batching, collection creation, metadata mapping, and ID generation. Bring your own vector DB API key.",
+  "version": "0.1.0",
+  "dockerfile": "./Dockerfile",
+  "main": "src/agent/main.py",
+  "input": "./INPUT_SCHEMA.json",
+  "output": {
+    "actorOutputSchemaVersion": 1,
+    "title": "Write results",
+    "properties": {
+      "results": {
+        "type": "string",
+        "title": "Default dataset results",
+        "template": "{{links.apiDefaultDatasetUrl}}/items"
+      }
+    }
+  }
+}
