@@ -163,25 +163,23 @@ def _build_qdrant_point(
 ) -> dict:
     """Convert an embedding item into a Qdrant point object.
 
-    Uses chunk_id (or configured id_field) as the point ID.
-    Falls back to UUID if no ID field is present.
-    Passes through all metadata as payload.
+    Always uses a UUID as the point ID since Qdrant only accepts UUIDs
+    or unsigned integers -- not arbitrary strings like chunk_id hex values.
+    The original id_field value (e.g., chunk_id) is preserved in the payload
+    so it remains searchable as metadata.
     """
-    # Determine point ID -- Qdrant accepts UUID strings or integers
-    point_id = item.get(id_field, "")
-    if not point_id or not isinstance(point_id, str):
-        point_id = str(uuid.uuid4())
+    # Always generate a UUID for Qdrant point ID
+    point_id = str(uuid.uuid4())
 
     # Extract embedding
     embedding = item.get("embedding", [])
 
     # Build payload from all non-embedding, non-internal fields
+    # Note: id_field (e.g., chunk_id) is included in payload for traceability
     skip_fields = {"embedding", "_summary", "index", "dimensions"}
     payload = {}
     for key, value in item.items():
         if key in skip_fields:
-            continue
-        if key == id_field:
             continue
         # Qdrant payload accepts any JSON-serializable value
         if isinstance(value, (str, int, float, bool, list, dict)):
