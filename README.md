@@ -1,6 +1,6 @@
 # RAG Vector Store Writer
 
-Apify Actor that writes embedding vectors to Pinecone or Qdrant vector databases. Chains directly with RAG Embedding Generator output or accepts raw vectors with metadata. Handles batching, retries, collection creation, metadata mapping, and ID generation. Bring your own vector DB API key.
+Apify Actor that writes embedding vectors to Pinecone or Qdrant vector databases. Chains directly with RAG Embedding Generator output or accepts raw vectors with metadata. Handles batching, retries, collection creation, metadata mapping, and ID generation. Bring your own vector DB API key. MCP-ready for AI agent integration.
 
 ## Features
 - Two vector database providers: Pinecone and Qdrant Cloud
@@ -177,3 +177,31 @@ This is the actor's platform fee only. You also pay the vector database provider
 
 ## License
 See `LICENSE` file for details.
+
+---
+
+## MCP Integration
+
+This actor works as an MCP tool through Apify's hosted MCP server. No custom server needed.
+
+- **Endpoint:** `https://mcp.apify.com?tools=labrat011/rag-vector-store-writer`
+- **Auth:** `Authorization: Bearer <APIFY_TOKEN>`
+- **Transport:** Streamable HTTP
+- **Works with:** Claude Desktop, Cursor, VS Code, Windsurf, Warp, Gemini CLI
+
+**Example MCP config (Claude Desktop / Cursor):**
+
+```json
+{
+    "mcpServers": {
+        "rag-vector-store-writer": {
+            "url": "https://mcp.apify.com?tools=labrat011/rag-vector-store-writer",
+            "headers": {
+                "Authorization": "Bearer <APIFY_TOKEN>"
+            }
+        }
+    }
+}
+```
+
+AI agents can use this actor to write embedding vectors to Pinecone or Qdrant, build vector indexes, and populate RAG knowledge bases -- all as a callable MCP tool.
