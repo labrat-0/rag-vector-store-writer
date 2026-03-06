@@ -78,6 +78,6 @@
             "default": "chunk_id"
         }
     },
-    "required": ["api_key", "index_name"],
+    "required": [],
     "additionalProperties": false
 }
